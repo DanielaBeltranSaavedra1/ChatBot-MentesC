@@ -1,0 +1,85 @@
+version: "2.0"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - answer_question
+  - rephrase
+
+entities:
+  - frequency
+
+actions:
+  - action_ask_question
+  - action_start_questions
+  - action_end_conversation
+#  - example
+
+slots:
+  question_id:
+      type: unfeaturized
+      initial_value: 0
+  frequency:
+      type: categorical
+      values:
+      - low
+      - low-medium
+      - medium
+      - medium-high
+      - high
+  state:
+      type: categorical
+      values:
+      - intro
+      - questions
+      initial_value: intro
+
+
+responses:
+  utter_greet:
+  - text: "Hola! ¿Cómo estás?"
+
+  utter_cheer_up:
+  - text: "Aquí hay algo para animarte:"
+    image: "https://todo-para-ti48.webnode.es/_files/system_preview_detail_200000009-85fed87f28-public/perritos-bonitos-de-cachorros-tiernos-en-excelente-calidad-213792.jpg"
+
+  utter_relax:
+  - text: "Aquí hay algo para que puede ayudar a relajarte:"
+    image: "https://todo-para-ti48.webnode.es/_files/system_preview_detail_200000009-85fed87f28-public/perritos-bonitos-de-cachorros-tiernos-en-excelente-calidad-213792.jpg"
+
+  utter_ask_question:
+  - text: "¿Tienes algún problema en tu trabajo, estudio o en tu familia?"
+
+  utter_ask_question_stress:
+  - text: "¿Te sientes muy estresado?"
+
+  utter_ask_question_family:
+  - text: "¿Tienes algún problema con tus padres o tu pareja?"
+
+  utter_ask_question_lesion:
+  - text: "¿En las dos últimas semanas, ¿con qué frecuencia ha tenido pensamientos que impliquen autolesión?"
+
+  utter_ask_question_tiempo:
+  - text: "¿Hace cuanto te sientes así?"
+
+  utter_ask_question_request:
+  - text: "¿Puedo realizarle unas pocas preguntas para realizar la evaluación?"
+
+  utter_did_that_help:
+  - text: "¿Eso te ayudó?"
+
+  utter_happy:
+  - text: "Genial!"
+
+  utter_goodbye:
+  - text: "Adios"
+
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

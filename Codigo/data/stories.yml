@@ -1,0 +1,25 @@
+version: "2.0"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+
+- story: sad path start conversation
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_ask_question_request
+  - intent: affirm
+  - slot_was_set:
+    - state : intro
+  - action: action_ask_question
+  - slot_was_set:
+    - state: questions
+  - slot_was_set:
+    - frequency: null
