@@ -1,0 +1,182 @@
+version: "2.0"
+
+nlu:
+- intent: greet
+  examples: |
+    - hola
+    - que mas
+    - buenos días
+    - buenas tardes
+    - buenas noches
+
+- intent: goodbye
+  examples: |
+    - buena tarde
+    - chao
+    - adios
+    - nos vemos
+    - buena noche
+    - buen día
+    - tenga un buen día
+
+- intent: affirm
+  examples: |
+    - si
+    - por supuesto
+
+- intent: deny
+  examples: |
+    - no
+    - nunca
+    - no creo
+
+- intent: mood_great
+  examples: |
+    - perfecto
+    - exelente
+    - increible
+    - maravilloso
+    - genial
+    - bien
+
+- intent: mood_unhappy
+  examples: |
+    - estoy triste
+    - no me siento bien 
+    - muy triste
+    - infeliz
+    - no estoy bien
+    - mal
+    - Tengo mucha ansiedad
+    - Me siento triste y con impotencia
+    - Me siento Solo
+    - tengo cambios de genio
+    - Me siento triste y vacio
+    - tengo ataques de ansiedad y no puedo controlarlos
+    - Tengo miedo
+    - Tengo desmotivación
+    - Tengo fiebre
+    - Tengo insomnio y pesadillas
+    - Me siento triste 
+    - Mi madre esta enferma
+    - Me siento bien
+    - No puedo hablar con mi amigo
+    - Sufro de maltrato
+    - Me golpean
+    - Perdi mi trabajo
+    - Termine con mi pareja
+    - Tengo depresion
+
+
+- intent: answer_question
+  examples: |
+    - Nunca me pasa
+    - No me ha pasado
+    - Muy pocas veces
+    - Jamás
+    - Nunca
+    - Jamás haría algo así
+    - Pocas veces
+    - Muy
+    - No me ha sucedido
+    - Ninguna vez
+    - Ningún día
+    - Pocas veces
+    - Algunos días me sucede
+    - A veces me pasa
+    - Depende
+    - Casi siempre me ocurre
+    - A menudo lo pienso
+    - Todos los días
+    - Estoy cansado
+    - Siempre
+    - Mucho
+    - A menudo
+    - Para nada
+    - Ultimamente estoy teniendo algunas dificultades para levantarme de la cama, no me siento muy motivado
+    - Solo por las mañanas, unas pocas
+    - dos o tres veces
+    - varias veces
+    - con frecuencia
+    - Depende del día
+    - Casi todos los días
+    - Si
+    - No
+- synonym: high
+  examples: |
+    - Todos los días
+    - Siempre
+    - muchísimo
+    - Muchas veces
+    - mucha frecuencia
+    - más de la cuenta
+    - mayoría de los días
+    - a diario
+    - Diariamente
+    - 24h del día
+    - constantemente
+    - mucha
+    - todo el tiempo
+    - mucho
+    - Continuamente
+    - Casi todos los días
+    - mayoría de días
+    - mayoría de veces
+- synonym: low
+  examples: |
+    - nunca
+    - muy pocas veces
+    - Jamás
+    - Nunca jamás
+    - Muy pocas
+    - ninguna vez
+    - ninguna ocasión
+    - ningún día
+    - En ningún momento
+    - Casi nunca
+    - una vez
+    - ningún
+    - Para nada
+    - muy poca frecuencia
+
+- synonym: low-medium
+  examples: |
+    - Pocas veces
+    - Pocas
+    - pocas ocasiones
+    - Con poca frecuencia
+    - Pocos días
+    - Algunos días
+
+- synonym: medium
+  examples: |
+    - En ocasiones
+    - de vez en cuando
+    - Alguna que otra vez
+    - A veces
+    - par de días
+    - depende
+    - varias veces
+    - algunas veces
+
+- synonym: medium-high
+  examples: |
+    - Un par de veces
+    - Casi siempre
+    - más de la mitad
+    - casi todos
+    - Bastantes veces
+    - bastantes ocasiones
+    - Bastante
+    - A menudo
+    - bastante frecuencia
+    - Bastante
+    - con frecuencia
+
+- intent: rephrase
+  examples: |
+    - No entiendo
+    - ¿Qué quieres decir?
+    - No sé a qué te refieres
+    - Puedes repetirlo?
+

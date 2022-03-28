@@ -33,6 +33,9 @@ class ActionAskQuestion(Action):
             return [FollowupAction("action_end_conversation")]
         dispatcher.utter_message(text=f"**Pregunta {current_question + 1} de {len(QUESTIONS)}** \n --- \n" +
                                       QUESTIONS[current_question])
+        nlp = pipeline('question-answering', model='mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es',
+            tokenizer=('mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es', {"use_fast": False}))
+        dispatcher.utter_message(text=nlp({'question': QUESTIONS[current_question],'context': 'Diego esta sufriendo de estrés por la separación con su esposa '})['answer'])
         return [SlotSet('question_id', current_question + 1)]
 
 class ActionStartQuestions(Action):
@@ -60,21 +63,19 @@ class ActionEndConversation(Action):
 
         return [ConversationPaused()]
 
-"""
-class  example(Action):
+#class  example(Action):
 
-    def name(self) -> Text:
-        return "example"
+#    def name(self) -> Text:#
+#       return "example"
   
-    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+#    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+#        nlp = pipeline('question-answering', model='mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es', 
+#            tokenizer=('mrm8488/distill-bert-base-spanish-wwm-cased-finetuned-spa-squad2-es', {"use_fast": False}))
 
-        nlp1 = pipeline( 'question-answering', model='mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es', 
-            tokenizer=('mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es',{"use_fast": False}))
-        return  [SlotSet(nlp1({'question': 'question','context': context_tristeza}))]"""
+#        dispatcher.utter_message(text=nlp({QUESTIONS[0]: '¿Para qué lenguaje está trabajando?', 'context': 'Manuel Romero está colaborando activamente con huggingface/transformers ' +
+ #                   'para traer el poder de las últimas técnicas de procesamiento de lenguaje natural al idioma español'}))
+ #       return [SlotSet('state','text-kiut')]
 
-
-
-
-
-        
-        
+        #nlp1 = pipeline( 'question-answering', model='mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es', 
+        #    tokenizer=('mrm8488/bert-base-spanish-wwm-cased-finetuned-spa-squad2-es',{"use_fast": False}))
+       # return  [SlotSet(nlp1({'question': 'question','context': 'question'}))]
