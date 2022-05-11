@@ -22,6 +22,7 @@ pipeline:
      constrain_similarities: true
 
 policies:
+  - name: RulePolicy
   - name: MemoizationPolicy
   - name: TEDPolicy
     max_history: 5

@@ -2,24 +2,42 @@ version: "2.0"
 
 stories:
 
-- story: happy path
+- story: Step 1 Say hi and ask personal information
   steps:
   - intent: greet
-  - action: utter_greet
-  - intent: mood_great
-  - action: utter_happy
-
-- story: sad path start conversation
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_unhappy
+  - action: action_ask_personal_information
+  - intent: user_name
+  - action: action_ask_personal_information_fecha
+  - intent: fecha_nacimiento
+  - action: action_ask_personal_information_numero
+  - intent: user_phone
+  - action: action_ask_personal_information_mail
+  - intent: mail
+  - action: action_ask_personal_information_documento
+  - intent: user_doc
+  - action: action_active_chatbot
   - action: utter_ask_question_request
-  - intent: affirm
-  - slot_was_set:
-    - state : intro
-  - action: action_ask_question
-  - slot_was_set:
-    - state: questions
-  - slot_was_set:
-    - frequency: null
+  - intent: affirm_response
+  - action: action_ask_mood
+  - intent: mood_unhappy
+  - action: action_get_first_mood
+
+- story: Step 12 ask second time to get mood
+  steps:
+  - action: action_ask_question_two_moods
+  - intent: mood_unhappy
+  - action: action_mood_two_moods
+
+
+- story: Step 3 ask need more atention
+  steps:
+  - action: action_end_conversation
+  - intent: affirm_response
+  - action: action_end_conversation_more_atention
+
+- story: Step 3 ask no need more atention
+  steps:
+  - action: action_end_conversation
+  - intent: deny
+  - action: action_end_conversation_no_more_atention
+

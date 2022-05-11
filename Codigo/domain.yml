@@ -3,23 +3,47 @@ version: "2.0"
 intents:
   - greet
   - goodbye
-  - affirm
+  - affirm_response
   - deny
   - mood_great
   - mood_unhappy
   - answer_question
   - rephrase
+  - mail
+  - user_name
+  - fecha_nacimiento
+  - user_phone
+  - user_doc
 
 entities:
   - frequency
 
 actions:
+  - action_ask_personal_information
   - action_ask_question
   - action_start_questions
   - action_end_conversation
-#  - example
+  - action_end_conversation_more_atention
+  - action_ask_mood
+  - action_get_first_mood
+  - action_active_chatbot
+  - action_mood_two_moods
+  - action_ask_question_two_moods
+  - action_ask_personal_information_fecha
+  - action_ask_personal_information_numero
+  - action_ask_personal_information_mail
+  - action_ask_personal_information_documento
+  - action_end_conversation_no_more_atention
+  - action_depression_end
+  - action_send_conversation_depression
 
 slots:
+  question_two_moods_id:
+    type: unfeaturized
+    initial_value: 0
+  personal_info_id:
+      type: unfeaturized
+      initial_value: 0
   question_id:
       type: unfeaturized
       initial_value: 0
@@ -36,12 +60,18 @@ slots:
       values:
       - intro
       - questions
+      - personal_info
+      - hi
+      - question_two_moods
       initial_value: intro
 
 
 responses:
-  utter_greet:
+  utter_hi:
   - text: "Hola! ¿Cómo estás?"
+
+  utter_ask_personal_info:
+  - text: "Por favor ingresa tus datos personales"
 
   utter_cheer_up:
   - text: "Aquí hay algo para animarte:"
@@ -67,7 +97,7 @@ responses:
   - text: "¿Hace cuanto te sientes así?"
 
   utter_ask_question_request:
-  - text: "¿Puedo realizarle unas pocas preguntas para realizar la evaluación?"
+  - text: "¿Te gustaría hablar conmigo? Puedo sugerirte algunos recursos o recomendaciones que te podrían ayudar"
 
   utter_did_that_help:
   - text: "¿Eso te ayudó?"
@@ -77,6 +107,9 @@ responses:
 
   utter_goodbye:
   - text: "Adios"
+
+  utter_goodbye_nochat:
+  - text: "Está bien. ¡Espero hablar contigo en otro momento!, recuerda que tienes las lineas de atención 123"
 
 
 

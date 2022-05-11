@@ -1,6 +1,7 @@
 version: "2.0"
 
 nlu:
+
 - intent: greet
   examples: |
     - hola
@@ -19,10 +20,18 @@ nlu:
     - buen día
     - tenga un buen día
 
-- intent: affirm
+- intent: affirm_response
   examples: |
     - si
     - por supuesto
+    - bueno
+    - perfecto
+    - bien
+    - genial
+    - esta bien
+    - ok 
+    - claro
+    - Si
 
 - intent: deny
   examples: |
@@ -66,6 +75,18 @@ nlu:
     - Perdi mi trabajo
     - Termine con mi pareja
     - Tengo depresion
+    - dormir bien
+    - novio
+    - novia
+    - sueño
+    - cachos
+    - tristeza
+    - no se si puedas ayudarme la verdad siento que todo el mundo me odia
+    - termine con mi novio estoy triste
+    - termine con mi novia
+    - me separe de mi esposa
+    - mi novio me puso los cachos
+    - mi novia me puso los cachos
 
 
 - intent: answer_question
@@ -179,4 +200,137 @@ nlu:
     - ¿Qué quieres decir?
     - No sé a qué te refieres
     - Puedes repetirlo?
+
+- intent: mail
+  examples: |
+    - [abc@gmail.com]
+    - [abc@yourdomain]
+    - @gmail.com
+    - [xyz@gmail.com]
+    - d_beltran@javeriana.edu.co
+    - [xerw@javeriana.edu.co]
+    - [asd@sads.edu.co]
+
+- intent: user_name
+  examples: |
+    - Camila Castro
+    - Daniela
+    - Yohana
+    - Santiago
+    - Matias Dalto
+    - Angel
+    - Gabriel
+    - Simon
+    - Thiago
+    - Valentin
+    - Julian
+    - Nicolas Bar
+    - Benjamin
+    - Erick
+    - Sasha Beltran
+    - Dante
+    - Enzo Bens
+    - Silas
+    - Marco
+    - Andrea Rojas
+    - Ariel
+    - Nicolas Duarte
+    - Ospina
+    - Chaparro
+    - Mario Carnero
+    - Katherine
+    - Rojas
+
+
+- intent: fecha_nacimiento
+  examples: |
+    - Enero
+    - Febrero
+    - Marzo
+    - Abril
+    - Mayo
+    - Junio
+    - Julio
+    - Agosto
+    - septimebre
+    - Octubre
+    - Noviembre
+    - diciembre
+    - 1 Enero
+    - 2 Febrero
+    - 3 Marzo
+    - 9 Abril
+    - 10 Mayo
+    - 20 Junio
+    - 30 Julio
+    - Agosto 2002
+    - septimebre 1990
+    - Octubre 1092
+    - Noviembre 1997
+    - diciembre 1963
+    - 1 Agosto 2002
+    - 13 septimebre 1990
+    - 8 Octubre 1092
+    - 30 Noviembre 1997
+    - 22 diciembre 1963
+    - 13/09/1997
+    - 01/01/1963
+    - 13/02/1997
+    - 01/03/1963
+    - 23/04/1997
+    - 01/05/1963
+    - 31/06/1997
+    - 01/07/1943
+    - 13/08/1997
+    - 10/09/1363
+    - 13/10/1937
+    - 01/11/19263
+    - 13/12/1997
+    - / /
+    - [09]/[09]/[2319]
+
+
+
+- intent: user_phone
+  examples: |
+    - +57 21321321
+    - +57021321
+    - 02321321
+    - 321301231
+    - 302321231
+    - 03219321
+    - 31239112
+    - 8021932
+    - 301
+    - 302
+    - 310
+    - 311
+    - 312
+    - 31[7]
+    - +57
+- intent: user_doc
+  examples: |
+    - 1010236117
+    - 35518733
+    - 5712980
+    - 17023821
+    - CC
+    - TI
+    - CE
+    - PASAPORTE
+    - cc
+    - ti
+    - ce
+    - pas
+    - pasaporte
+    - CC [1010236117]
+    - TI [157320]
+    - CE [3720236117]
+    - PASAPORTE
+    - cc [1010236116]
+    - ti [2123123]
+    - ce [123213]
+    - pas
+    - pasaporte
+
 
