@@ -21,6 +21,37 @@ stories:
   - action: action_ask_mood
   - intent: mood_unhappy
   - action: action_get_first_mood
+  - action: action_recursos
+  - action: action_more_conversation_more_recursos
+  - intent: affirm_response
+  - action: action_ask_question_continue_conversation
+
+
+- story: Step 2 continue conversarion
+  steps: 
+  - action: action_ask_question_continue_conversation
+  - intent: mood_unhappy
+  - action: action_get_first_mood
+  - action: action_recursos
+  - action: action_more_conversation_more_recursos
+  - intent: affirm_response
+  - action: action_ask_question_continue_conversation
+  - intent: mood_unhappy
+  - action: action_get_first_mood
+  - action: action_recursos
+  - action: action_more_conversation_more_recursos
+  - intent: affirm_response
+  - action: action_ask_question_continue_conversation
+  - intent: mood_unhappy
+  - action: action_get_first_mood
+  - action: action_recursos
+  - action: action_more_conversation_more_recursos
+  - intent: affirm_response
+  - action: action_ask_question_continue_conversation
+  - intent: mood_unhappy
+  - action: action_get_first_mood
+  - action: action_recursos
+  - action: action_end_conversation
 
 - story: Step 12 ask second time to get mood
   steps:
@@ -29,15 +60,20 @@ stories:
   - action: action_mood_two_moods
 
 
-- story: Step 3 ask need more atention
+- story: Step 2 no continue conversarion
+  steps: 
+  - action: action_more_conversation_more_recursos
+  - intent: deny
+  - action: action_end_conversation
+ 
+- story: Step 3 terminar conversacion y enviar mail de mas atencion
   steps:
   - action: action_end_conversation
   - intent: affirm_response
   - action: action_end_conversation_more_atention
 
-- story: Step 3 ask no need more atention
+- story: Step 3 terminar conversacion y no enviar mail de mas atencion
   steps:
   - action: action_end_conversation
   - intent: deny
   - action: action_end_conversation_no_more_atention
-

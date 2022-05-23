@@ -87,6 +87,342 @@ nlu:
     - me separe de mi esposa
     - mi novio me puso los cachos
     - mi novia me puso los cachos
+    - agitado
+    - agitada
+    - temblando
+    - tembloroso
+    - inquieto
+    - inquieta
+    - intranquilo
+    - intranquila
+    - pensamientos molestos
+    - pensamientos repetitivos 
+    - pensamientos obsesivos 
+    - pensamientos intrusivos
+    - abrumada
+    - abrumado
+    - presión
+    - presionado
+    - presionada
+    - preocupado
+    - preocupada
+    - preocupación
+    - angustia
+    - angustiada
+    - angustiado
+    - temor
+    - miedo
+    - afán
+    - sin solución
+    - insomnio 
+    - no dormir bien
+    - comer mucho
+    - comer poco
+    - sudoración
+    - falta de aire
+    - presión en el pecho
+    - palpitaciones
+    - taquicardia
+    - respiración rápida
+    - dolor de estómago
+    - náuseas
+    - miedo al fracaso
+    - incertidumbre
+    - evitar
+    - evita
+    - evitando
+    - incómodo
+    - sufro de los nervios
+    - nervios
+    - nervioso
+    - nerviosa
+    - escalofríos
+    - entumecimiento
+    - hormigueo
+    - no me hallo
+    - ganas de salir corriendo
+    - no controlar
+    - tensa
+    - tenso
+    - con el corazón a mil
+    - desasosiego
+    - zozobra
+    - ataque de pánico
+    - ataque de ansiedad
+    - impaciencia
+    - impaciente
+    - atacada
+    - paniquear
+    - paniqueado
+    - paniqueada
+    - entrar en pánico
+    - sentir pánico
+    - no puedo dormir
+    - dificultad para dormir
+    - problemas de sueño
+    - ansiedad
+    - angustia
+    - estres
+    - depresión 
+    - inseguridad
+    - irritabilidad
+    - concentrarse
+    - concentración
+    - fatiga
+    - tension muscular
+    - dificultad para dormir
+    - temor 
+    - dificultad para respirar
+    - sudoracion
+    - agobiada
+    - preocupado
+    - ira
+    - perdi
+    - perdio
+    - perdido
+    - miedo
+    - COVID
+    - Me preocupo demasiado por cosas sin importancia
+    - Me rondan y molestan pensamientos normalmente negativos que no puedo controlar
+    - Me afectan los desengaños tanto que no puedo olvidarlos
+    - Suelo tomar las cosas demasiado seriamente
+    - Me siento tenso o alterado la mayor parte del tiempo
+    - Me preocupo ahora por desgracias futuras que pienso que es posible que pasen
+    - Me siento contrariado porque realizo cosas que no me gustan
+    - Me siento normalmente atado u oprimido
+    - melancolía
+    - deprimido
+    - tristeza
+    - solo
+    - sola
+    - soledad
+    - desesperación
+    - desesperado
+    - desesperada
+    - oscuro
+    - miseria
+    - miserable
+    - abatido
+    - lloroso
+    - llorar
+    - llorando
+    - lloro
+    - llanto
+    - luchando
+    - batallando
+    - triste
+    - tristeza
+    - infeliz
+    - pena
+    - desdicha
+    - abatimiento
+    - abatido
+    - desánimo
+    - pesadez de corazón
+    - inutilidad
+    - inútil
+    - vacío
+    - vacía
+    - desánimo
+    - desolación
+    - bajón
+    - bajonazo
+    - bajoneado
+    - bajoneada
+    - mal humor
+    - mal genio
+    - pesimismo
+    - desesperanza
+    - sin propósito en la vida
+    - pérdida de interés
+    - sin fuerza
+    - agotado
+    - agotada
+    - insatisfecho
+    - insatisfecha
+    - sin razón para existir
+    - cargado
+    - cargada
+    - carga emocional
+    - depresivo
+    - depresiva
+    - depresión
+    - mal
+    - frustrado
+    - frustrada
+    - desmotivado
+    - desmotivada
+    - poca motivación
+    - destrozada
+    - destrozado
+    - desconectado
+    - desconectada
+    - desganada
+    - desganado
+    - sin ganas
+    - desorientación
+    - desorientado
+    - desorientada
+    - perdido
+    - perdida
+    - agobiado
+    - agobiada
+    - desgastado
+    - desgastada
+    - estancado
+    - estancada
+    - bueno para nada
+    - buena para nada
+    - no disfruto
+    - culpa
+    - culpable
+    - altibajo
+    - altibajos
+    - irritable
+    - irritabilidad
+    - aburrido
+    - aburrida
+    - desinteresado
+    - desinteresada
+    - sin sentido
+    - desolado
+    - desolador
+    - fracasado
+    - fracasada
+    - derrumbado
+    - derrumbada
+    - desgracia
+    - inmunda
+    - pésimo
+    - depre
+    - acabado
+    - acabada
+    - comprensión
+    - incomprendido
+    - nadie me comprende
+    - afectado
+    - afectada
+    - decaído
+    - alegre 
+    - alegria
+    - feliz 
+    - contento 
+    - tristeza 
+    - miedo  
+    - rabia 
+    - triste 
+    - ira
+    - atemorizado
+    - depresion
+    - impotencia
+    - decaido
+    - amigo
+    - amiga
+    - amistad
+    - suicidio
+    - frustrado
+    - frustracion
+    - perdido
+    - Me he sentido con poca energía últimamente
+    - He perdido el interés por las cosas
+    - He perdido la confianza en mí mismo
+    - Me he sentido desesperanzado
+    - He tenido dificultades para concentrarme
+    - He perdido peso a causa de mi falta de apetito
+    - Me despierto demasiado temprano
+    - Estoy más lento de lo habitual
+    - me duele el alma
+    - No me aguanto la vida
+    - muerte
+    - morirme 
+    - matarse 
+    - morir 
+    - matarme 
+    - hacerme daño 
+    - cortarme 
+    - cortarse 
+    - quemarse 
+    - dañarse 
+    - ahorcarme
+    - desaparecer
+    - cutting
+    - no quiero estar 
+    - no aguanto mas 
+    - nadie me entiende 
+    - para que vivir 
+    - para que estoy aquí
+    - no quiero seguir mas
+    - no quiero vivir
+    - estoy cansado
+    - estoy harto
+    - no tiene sentido
+    - no despertar
+    - acabar con mi vida
+    - morir
+    - matar
+    - me quiero matar
+    - me quiero morir
+    - no tiene solución
+    - sin solución
+    - quiero lanzarme
+    - quiero tirarme
+    - botarme
+    - ahogarme
+    - No me aguanto la vida 
+    - muerte
+    - morirme
+    - matarse
+    - morir
+    - matarme
+    - daño
+    - hacerme daño
+    - cortarme
+    - cortarse
+    - quemarse
+    - dañarse
+    - ahorcarme
+    - desaparecer 
+    - no quiero estar 
+    - no aguanto mas
+    - nadie me entiende
+    - para que vivir
+    - para que estoy aquí
+    - no quiero seguir mas
+    - no quiero vivir
+    - estoy cansado
+    - estoy harto
+    - no tiene sentido
+    - no despertar
+    - acabar con mi vida
+    - morir
+    - matar
+    - me quiero matar
+    - me quiero morir
+    - no tiene solución
+    - sin solución
+    - No quiero vivir mas en este mundo
+    - me quiro ahorcar y matarme
+    - morir es mi único destino final
+    - quiero cortarme las venas
+    - ya no aguanto mas, me voy de este mundo
+    - no quiero vivir así con este dolor
+    - quiero tirarme al agua y ahogarme
+    - me quiero suicidar, esta vida no vale la pena
+    - Solo pienso en desaparecer 
+    - Siento que no estoy vivo 
+    - Hay días en los que siento que ya no puedo más
+    - Si me quedo aquí, solo irá a peor, prefiero morir
+    - Tengo que hacerlo, no me queda otra opción
+    - Es como si ya estuviera muerto 
+    - Me he dado cuenta de que nada tiene sentido 
+    - Mi vida solo puede ir a peor
+    - Algunas veces vale más unirse en la muerte que verse separados por la vida
+    - Tengo ganas de suicidarme, pero tengo tantos problemas que esa no sería la solución
+    - Siento que este mundo no es para mí 
+    - Soy un cobarde, no merezco seguir así
+    - Uno se puede suicidar de mil formas distintas sin morirse de verdad
+    - Suicidarse es fácil
+    - Sonrío por fuera, pero todo está roto por dentro 
 
 
 - intent: answer_question

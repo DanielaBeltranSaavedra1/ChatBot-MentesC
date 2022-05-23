@@ -2,72 +2,118 @@ agitado
 agitada
 temblando
 tembloroso
-inquieto 
-inquieta 
-intranquilo 
-intranquila 
-pensamientos molestos 
-pensamientos repetitivos
-pensamientos obsesivos
-pensamientos intrusivos 
-abrumada 
-abrumado 
-presión 
-presionado 
-presionada 
-preocupado 
-preocupada 
-preocupación 
-angustia 
-angustiada 
-angustiado 
+inquieto
+inquieta
+intranquilo
+intranquila
+pensamientos molestos
+pensamientos repetitivos 
+pensamientos obsesivos 
+pensamientos intrusivos
+abrumada
+abrumado
+presión
+presionado
+presionada
+preocupado
+preocupada
+preocupación
+angustia
+angustiada
+angustiado
+temor
+miedo
+afán
+sin solución
+insomnio 
+dormir bien
+comer mucho
+comer poco
+sudoración
+falta de aire
+presión en el pecho
+palpitaciones
+taquicardia
+respiración rápida
+dolor de estómago
+náuseas
+miedo al fracaso
+incertidumbre
+evitar
+evita
+evitando
+incómodo
+sufro de los nervios
+nervios
+nervioso
+nerviosa
+escalofríos
+entumecimiento
+hormigueo
+hallo
+ganas de salir corriendo
+no controlar
+tensa
+tenso
+con el corazón a mil
+desasosiego
+zozobra
+ataque de pánico
+ataque de ansiedad
+impaciencia
+impaciente
+atacada
+paniquear
+paniqueado
+paniqueada
+entrar en pánico
+sentir pánico
+puedo dormir
+dificultad para dormir
+problemas de sueño
+ansiedad
+angustia
+estres
+inseguridad
+irritabilidad
+concentrarse
+concentración
+fatiga
+tension muscular
+dificultad para dormir
 temor 
-miedo 
-afán 
-sin solución 
-insomnio
-no dormir bien 
-comer mucho 
-comer poco 
-sudoración 
-falta de aire 
-presión en el pecho 
-palpitaciones 
-taquicardia 
-respiración rápida 
-dolor de estómago 
-náuseas 
-miedo al fracaso 
-incertidumbre 
-evitar 
-evita 
-evitando 
-incómodo 
-sufro de los nervios 
-nervios 
-nervioso 
-nerviosa 
-escalofríos 
-entumecimiento 
-hormigueo 
-no me hallo 
-ganas de salir corriendo 
-no controlar 
-tensa 
-tenso 
-con el corazón a mil 
-desasosiego 
-zozobra 
-ataque de pánico 
-ataque de ansiedad 
-impaciencia 
-impaciente 
-atacada 
-paniquear 
-paniqueado 
-paniqueada 
-entrar en pánico 
-sentir pánico 
-no puedo dormir 
-dificultad para dormir 
-problemas de sueño 
+dificultad para respirar
+sudoracion
+agobiada
+preocupado
+ira
+perdi
+perdio
+perdido
+miedo
+COVID
+quedo sin aire
+duele el pecho
+preocupada
+problemas
+problemas son más grandes que yo
+inquieta
+hayo en nada
+tensa
+mucho que hacer
+no me alcanza el tiempo
+Me angustia pensar que no voy a ser capaz y que todos se van a decepcionar de mi 
+Sufro de los nervios
+A veces me da la pensadera y eso me desespera
+Me estreso mucho y empieza comer un montón
+Me angustio y dejo de comer
+Me he sentido muy nerviosa, todo me altera, me irrita, me desespero con todo.
+Me da miedo no saber qué va a pasar con esto que me molesta.
+preocupo demasiado por cosas sin importancia
+rondan y molestan pensamientos normalmente negativos que no puedo controlar
+afectan los desengaños tanto que no puedo olvidarlos
+Suelo tomar las cosas demasiado seriamente
+siento tenso o alterado la mayor parte del tiempo
+preocupo ahora por desgracias futuras que pienso que es posible que pasen
+siento contrariado porque realizo cosas que no me gustan
+siento normalmente atado u oprimido 

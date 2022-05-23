@@ -36,6 +36,9 @@ actions:
   - action_end_conversation_no_more_atention
   - action_depression_end
   - action_send_conversation_depression
+  - action_recursos
+  - action_ask_question_continue_conversation
+  - action_more_conversation_more_recursos
 
 slots:
   question_two_moods_id:
@@ -97,7 +100,7 @@ responses:
   - text: "¿Hace cuanto te sientes así?"
 
   utter_ask_question_request:
-  - text: "¿Te gustaría hablar conmigo? Puedo sugerirte algunos recursos o recomendaciones que te podrían ayudar"
+  - text: "¿Te gustaría hablar conmigo?, podria recomendarte algún recurso que puede ayudarte"
 
   utter_did_that_help:
   - text: "¿Eso te ayudó?"

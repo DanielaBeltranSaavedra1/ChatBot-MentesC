@@ -6,3 +6,37 @@ rules:
   steps:
   - intent: goodbye
   - action: utter_goodbye
+
+- rule: Step 12 ask second time to get mood
+  steps:
+  - action: action_ask_question_two_moods
+  - intent: mood_unhappy
+  - action: action_mood_two_moods
+
+- rule: Step 3 ask need more atention
+  steps:
+  - action: action_end_conversation
+  - intent: affirm_response
+  - action: action_end_conversation_more_atention
+
+- rule: Step 3 ask no need more atention
+  steps:
+  - action: action_end_conversation
+  - intent: deny
+  - action: action_end_conversation_no_more_atention
+
+- rule: Step 1 Say hi and ask personal information
+  steps:
+  - intent: greet
+  - action: action_ask_personal_information
+
+- rule: Step ask more questions
+  steps:
+  - action: action_more_conversation_more_recursos
+  - intent: affirm_response
+  - action: action_ask_question_continue_conversation
+- rule: Step no more questions
+  steps: 
+  - action: action_more_conversation_more_recursos
+  - intent: deny
+  - action: action_end_conversation

@@ -38,7 +38,10 @@ class ActionAskPersonalInformation(Action):
         return "action_ask_personal_information"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
+            global myUser
+            global USERPERSONALINFO
+            USERPERSONALINFO = []
+            myUser = UserInformation("","","","","")
             dispatcher.utter_message(text="Hola! mi nombre es Mia, antes de comenzar por favor ingresa tus datos personales")
             dispatcher.utter_message(text="Ingresa tu nombre completo:")
             

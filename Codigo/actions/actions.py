@@ -24,22 +24,47 @@ import numpy as np
 import pandas as pd
 
 
+class ActionRecursos(Action):
+
+    def name(self) -> Text:
+        return "action_recursos"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        tema = ConversationUser.getCategoTema()
+        myUser = UserInformation.getMyUser()
+        bithday = myUser.birthday.split('/')
+        year = ''
+        if len(bithday) > 1:
+            year = bithday[2]
+        nombre = myUser.name.split(" ")
+        dispatcher.utter_message(text="Aquí hay algo para que puede ayudarte")
+        dispatcher.utter_message(text=selectResource(tema, year))
+        #dispatcher.utter_message(text=nombre[0] + " ¿Te gustaría que un profesional te contacte el siguiente día hábil para que brinde mayor atención?")
+
+        return [FollowupAction("action_more_conversation_more_recursos")]
+        
+class ActionAskNeedMoreConversation(Action):
+
+    def name(self) -> Text:
+        return "action_more_conversation_more_recursos"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        myUser = UserInformation.getMyUser()
+        nombre = myUser.name.split(" ")
+        dispatcher.utter_message(text=nombre[0] + " ¿Te gustaría seguir hablando conmigo?, podría recomendarte algún otro recurso que puede ayudarte")
+
+        return []
+
 class ActionEndConversation(Action):
 
     def name(self) -> Text:
         return "action_end_conversation"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        tema = ConversationUser.getTema()
         myUser = UserInformation.getMyUser()
-        bithday = myUser.birthday.split('/')
-        year = ''
-        if len(bithday) > 1:
-            year = bithday[2]
-        dispatcher.utter_message(text="Aquí hay algo para que puede ayudarte")
-        dispatcher.utter_message(text=selectResource(tema, year))
-        dispatcher.utter_message(text="¿Te gustaría que un profesional te contacte el siguiente día hábil para que brinde mayor atención?")
+        nombre = myUser.name.split(" ")
+        dispatcher.utter_message(text=nombre[0] + " ¿Te gustaría que un profesional te contacte el siguiente día hábil para que brinde mayor atención?")
 
         return []
 
@@ -52,6 +77,8 @@ class ActionEndConversationMoreAtention(Action):
 
         dispatcher.utter_message(text="Perfecto, un profesional se pondrá en contacto contigo!!")
         myUser = UserInformation.getMyUser()
+        nombre = myUser.name.split(" ")
+        dispatcher.utter_message(text=nombre[0]+ "Recuerda que acá estoy disponible para volver a hablar contigo ")
         conversationUser = ConversationUser.getConversation()
         message = '<html><body><h1>Hola! este correo es automático</h1><h2>A continuación tienes los datos del usuario que tuvo una conversación con el chatbot de Mentes y requiere más atención</h2><p><b>Nombre:</b></p></body></html>'
         sendMail(myUser.name,myUser.mail,myUser.phone,myUser.birthday,myUser.doc,conversationUser,'Si','Conversación con usuario que necesita más atención')
@@ -140,15 +167,20 @@ def selectResource(tema, year):
     resources = pd.read_excel(file_errors_location)
     toSelect = []
     age = getAge(year)
+    print("el tema elegido al final fue")
+    print(tema)
     for x in resources['SUBTEMA']:
-        y = x.split(';')
-        if tema in y:
+        t = x.replace("; ", ";")
+        y = t.split(';')
+        
+        if any(map(lambda each: each in y, tema)):
+            
             toSelect.append(x)
     selectRows = resources[resources.SUBTEMA.isin(toSelect)]
     
     row = []
     finalRowsResources = selectRows
-    if age <= 5:
+    if age <= 5: 
         row.append('0-5')
         finalRowsResources= selectRows[selectRows.a05 == 'Sí']
     if age >=6 and age <=11:
@@ -171,6 +203,7 @@ def selectResource(tema, year):
     
 
     selectResources = selectRows['Enlace'].values.tolist()
+    
     return selectResources[randint(0, len(selectResources)-1)]
 def getAge(year):
     print(year)

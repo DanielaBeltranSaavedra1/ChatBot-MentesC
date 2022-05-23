@@ -236,16 +236,24 @@ PREGUNTASTWOMOODS = ["¿Puedes contarme un poco más?"]
 HIQUESTIONS = ["¿Cómo puedo ayudarte?",
 "¿Sobre qué te gustaría conversar?",
 "¿En qué te gustaría enfocarte hoy?",
-"¿Puedes contarme un poco más sobre lo que te trae acá?",
 "¿Qué puedo hacer por ti?",
 "¿En qué puedo apoyarte?",
 "¿Cómo estás hoy?",
 "¿Qué ha pasado?",
 "¿Cómo te has sentido los últimos días?",]
 
+QUESTIONSCONTINUE = ["Cuentame, ¿algo más te preocupa?",
+"Cuentame un poco más de los problemas que llegaste a tener esta semana",
+"¿Cómo te hace sentir este problema?",
+"¿Cuál es el problema desde tu punto de vista?",]
+
 myFirstMoods =[]
+myFinalMood = ''
 myTwoMoods = False
 conversationWithUser =[]
+mood = []
+question_more = 0
+
 # si no coincide 2 vez contactar, recuerda que tienes disponible la linea de emergencia
 class ConversationUser:
     def __init__(self, conversation,tema):
@@ -258,35 +266,44 @@ class ConversationUser:
         for c in conversationWithUser:
             messageConversation = messageConversation + c
         return messageConversation
-    def getTema():
-        global myFirstMoods
-        mood = ""
-        for x in myFirstMoods:
-            if x == 'depresion':
-                mood = mood + " Tristeza"
-                mood = mood + " Trastorno depresivo"
-            if x == 'ansiedad':
-                mood = mood + " Ansiedad"
-                mood = mood + " Higiene del sueño"
-            if x == 'relaciones':
-                mood = mood + " Conflicto familiar"
-                mood = mood + " Características familiares"
-                mood = mood + " Relaciones intergeneracionales"
-                mood = mood + " Crianza"
-                mood = mood + " Relaciones de hermanos"
+    def getCategoTema():
+        global myFinalMood
+        global myConversation
+        global mood
+        
         return mood
 
 myUser = UserInformation("","","","","")
 myConversation = ConversationUser("","")
+
 class ActionAskMood(Action):
 
     def name(self) -> Text:
         return "action_ask_mood"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-    	dispatcher.utter_message(text=HIQUESTIONS[randint(0, len(HIQUESTIONS)-1)])
-    	print(UserInformation.getMyUser().name)
-    	return []
+        global myFirstMoods
+        global myFinalMood
+        global myTwoMoods
+        global conversationWithUser
+        global mood
+        global myUser
+        global myConversation
+        global mi_first
+        global question_more
+        mi_first = True;
+        myFirstMoods =[]
+        myFinalMood = ''
+        myTwoMoods = False
+        conversationWithUser =[]
+        mood = []
+        question_more = 0
+        myConversation = ConversationUser("","")
+
+
+        dispatcher.utter_message(text=HIQUESTIONS[randint(0, len(HIQUESTIONS)-1)])
+
+        return []
 
 class ActionGetFirstMood(Action):
 
@@ -303,7 +320,8 @@ class ActionGetFirstMood(Action):
         latest_message = current_state["latest_message"]["text"]
         conversationWithUser.append(latest_message)
         global mi_first
-        myFinalMood = ''
+        global myFinalMood
+        global mood
         if myTwoMoods:
             current_state = tracker.current_state()
             latest_message = current_state["latest_message"]["text"]
@@ -319,6 +337,8 @@ class ActionGetFirstMood(Action):
                         print("estoy mirando mi mood")
                         myFinalMood = y
                         myConversation.tema = myFinalMood
+            if myFinalMood == 'depresion':
+                myFinalMood = 'depresion'
             if myFinalMood == '':
                 myFinalMood = 'depresion'
             if myFinalMood == 'ansiedad':
@@ -331,6 +351,7 @@ class ActionGetFirstMood(Action):
                 dispatcher.utter_message(text="Por favor contacta la liena 123")
                 return [FollowupAction("action_depression_end")]
             myConversation.tema = myFinalMood
+            mood = arrayCategoSearch(myFinalMood)
         else:               
             if mi_first:
                 #firstMood = simil_spacy(latest_message)
@@ -354,10 +375,10 @@ class ActionGetFirstMood(Action):
                         return [FollowupAction("action_depression_end")]
                         
                 myConversation.tema = myFinalMood       
-                    
-                mi_first = False
+                mood = arrayCategoSearch(myFinalMood)
+                mi_first = True
            
-        return [FollowupAction("action_end_conversation")]
+        return [FollowupAction("action_recursos")]
 
 class ActionDepressionEnd(Action):
 
@@ -366,27 +387,29 @@ class ActionDepressionEnd(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(text="Por favor contacta la liena 123")
+        dispatcher.utter_message(text="Por favor contacta la linea 123")
 
-        return [FollowupAction("action_send_conversation_depression")]
+        return [FollowupAction("action_more_conversation_more_recursos")]
 
 class ActionAskQuestion(Action):
 
     def name(self) -> Text:
-        return "action_ask_question"
+        return "action_ask_question_continue_conversation"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        global myFirstMoods
-        current_question = tracker.get_slot('question_id')
-        if current_question == len(PREGUNTASELEGIDAS):
+       
+        question_more = tracker.get_slot('question_id')
+        if question_more == len(QUESTIONSCONTINUE):
             myConversation.conversation = conversationWithUser
             return [FollowupAction("action_end_conversation")]
-        current_state = tracker.current_state()
-        latest_message = current_state["latest_message"]["text"]
-        conversationWithUser.append(latest_message)
-        dispatcher.utter_message(text=f"**Pregunta {current_question + 1} de {len(PREGUNTASELEGIDAS)}** \n --- \n" +  PREGUNTASELEGIDAS[current_question])
-        conversationWithUser.append(PREGUNTASELEGIDAS[current_question])
-        return [SlotSet('question_id', current_question + 1)]
+        else: 
+            dispatcher.utter_message(text=QUESTIONSCONTINUE[question_more])
+            current_state = tracker.current_state()
+            latest_message = current_state["latest_message"]["text"]
+            conversationWithUser.append(latest_message)
+            conversationWithUser.append(QUESTIONSCONTINUE[question_more])
+        return [SlotSet('question_id', question_more + 1)]
+
 
 class ActionAskQuestionTwoMoods(Action):
 
@@ -412,6 +435,8 @@ class ActionMoodTwoMoods(Action):
         global myFirstMoods
         global myTwoMoods
         myFinalMood = ''
+        global mood
+        
         if myTwoMoods:
             current_state = tracker.current_state()
             latest_message = current_state["latest_message"]["text"]
@@ -421,12 +446,16 @@ class ActionMoodTwoMoods(Action):
                 for x in myMoodIs:
                     for y in myFirstMoods:
                         if x == y:
+                            print("en la seleccion final del mood")
+                            print(y)
                             myFinalMood = y
         else:
             for y in myFirstMoods:
                 if y == myMoodIs[0]:
                     myFinalMood = y
         if myFinalMood == '':
+            myFinalMood = 'depresion'
+        if myFinalMood == 'depresion':
             myFinalMood = 'depresion'
         if myFinalMood == 'ansiedad':
             PREGUNTASELEGIDAS=QUESTIONSANSIEDAD
@@ -438,8 +467,9 @@ class ActionMoodTwoMoods(Action):
             conversationWithUser.append("Por favor contacta la liena 123")
             return [FollowupAction("action_depression_end")]
         myConversation.tema = myFinalMood
+        mood = arrayCategoSearch(myFinalMood)
 
-        return [FollowupAction("action_ask_question")]
+        return [FollowupAction("action_ask_question_two_moods")]
 
 #CATEGORIZADOR 1 - lower
 
@@ -460,6 +490,60 @@ def lowerSpacy(sentence):
     print(search_doc.similarity(main_doc4))
     response = {'ansiedad': search_doc.similarity(main_doc1), 'depresion': search_doc.similarity(main_doc2), 'relaciones': search_doc.similarity(main_doc3), 'suicidio': search_doc.similarity(main_doc4)}
     return response
+
+def lowerStopSpacy(sentence):
+    test_raw = sentence.lower()
+    search_doc = nlp_spacy(test_raw)
+    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
+    print("Similitud con Ansiedad:")
+    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words1))
+    print("Similitud con Depresion:")
+    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words2))
+    print("Similitud con Relaciones:")
+    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words3))
+    print("Similitud con Suicidio:")
+    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words4))
+    response = {'ansiedad': search_doc_no_stop_words.similarity(main_doc_no_stop_words1), 'depresion': search_doc_no_stop_words.similarity(main_doc_no_stop_words2), 'relaciones': search_doc_no_stop_words.similarity(main_doc_no_stop_words3), 'suicidio': search_doc_no_stop_words.similarity(main_doc_no_stop_words4)}
+    return response
+
+def lowerStopLemaSpacy(sentence):
+    test_raw = sentence.lower()
+    search_doc = nlp_spacy(test_raw)
+    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
+    var_test=[]
+    for token in nlp_spacy(search_doc_no_stop_words):
+        var_test.append(token.lemma_)
+    var_str=" ".join(var_test)
+    var_str=nlp_spacy(var_str)
+
+    print("=================================")
+    print("Similitud con Ansiedad:")
+    print(var_str.similarity(main_doc1_lemma))
+    print("Similitud con Depresion:")
+    print(var_str.similarity(main_doc2_lemma))
+    print("Similitud con Relaciones:")
+    print(var_str.similarity(main_doc3_lemma))
+    print("Similitud con Suicidio:")
+    print(var_str.similarity(main_doc4_lemma))
+    response = {'ansiedad': var_str.similarity(main_doc1_lemma), 'depresion': var_str.similarity(main_doc2_lemma), 'relaciones': var_str.similarity(main_doc3_lemma), 'suicidio': var_str.similarity(main_doc4_lemma)}
+    return response
+
+
+def categorizerLower(sentence):
+    response = []
+    print("*****CATEGORIZADOR 1*****")
+    print("SPACY LOWER")
+    spacyResponse = lowerSpacy(sentence)
+    print("SPACY LOWER STOP")
+    cosenoResponse = lowerStopLemaSpacy(sentence)
+    print("SPACY LOWER STOP LEMA")
+    jaccardResponse = lowerStopLemaSpacy(sentence)
+    response.append(spacyResponse)
+    response.append(cosenoResponse)
+    response.append(jaccardResponse)
+    return response
+
+#CATEGORIZADOR 2 - lower and stopwords
 
 def lowerCoseno(sentence):
     text_query = sentence.lower()
@@ -488,66 +572,6 @@ def lowerCoseno(sentence):
     response = {'ansiedad': ansiedad, 'depresion': depresion, 'relaciones': relaciones, 'suicidio': suicidio}
     return response
 
-def lowerJaccard(sentence):
-    test_raw = sentence.lower()
-    ansiedad_bigrams = list(ngrams(raw_spacy_ansiedad, 2))
-    depresion_bigrams = list(ngrams(raw_spacy_depresion, 2))
-    relaciones_bigrams = list(ngrams(raw_spacy_relaciones, 2))
-    suicidio_bigrams = list(ngrams(raw_spacy_suicidio, 2))
-    input_bigrams = list(ngrams(test_raw, 2))
-    intersection_ansiedad = len(list(set(ansiedad_bigrams).intersection(set(input_bigrams))))
-    union_ansiedad = (len(set(ansiedad_bigrams)) + len(set(input_bigrams))) - intersection_ansiedad
-    simil_ansiedad= float(intersection_ansiedad) / union_ansiedad
-    intersection_depresion = len(list(set(depresion_bigrams).intersection(set(input_bigrams))))
-    union_depresion = (len(set(depresion_bigrams)) + len(set(input_bigrams))) - intersection_depresion
-    simil_depresion= float(intersection_depresion) / union_depresion
-    intersection_relaciones = len(list(set(relaciones_bigrams).intersection(set(input_bigrams))))
-    union_relaciones = (len(set(relaciones_bigrams)) + len(set(input_bigrams))) - intersection_relaciones
-    simil_relaciones= float(intersection_relaciones) / union_relaciones
-    intersection_suicidio = len(list(set(suicidio_bigrams).intersection(set(input_bigrams))))
-    union_suicidio = (len(set(suicidio_bigrams)) + len(set(input_bigrams))) - intersection_suicidio
-    simil_suicidio= float(intersection_suicidio) / union_suicidio
-    print("ansiedad: ")
-    print(simil_ansiedad)
-    print("depresion: ")
-    print(simil_depresion)
-    print("relaciones: ")
-    print(simil_relaciones)
-    print("suicidio: ")
-    print(simil_suicidio)
-    response = {'ansiedad': simil_ansiedad, 'depresion': simil_depresion, 'relaciones': simil_relaciones, 'suicidio': simil_suicidio}
-    return response
-
-def categorizerLower(sentence):
-    response = []
-    print("*****CATEGORIZADOR 1*****")
-    print("SPACY")
-    spacyResponse = lowerSpacy(sentence)
-    print("COSENO")
-    cosenoResponse = lowerCoseno(sentence)
-    print("JACCARD")
-    jaccardResponse = lowerJaccard(sentence)
-    response.append(spacyResponse)
-    response.append(cosenoResponse)
-    response.append(jaccardResponse)
-    return response
-
-#CATEGORIZADOR 2 - lower and stopwords
-
-def lowerStopSpacy(sentence):
-    test_raw = sentence.lower()
-    search_doc = nlp_spacy(test_raw)
-    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
-    print("Similitud con Ansiedad:")
-    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words1))
-    print("Similitud con Depresion:")
-    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words2))
-    print("Similitud con Relaciones:")
-    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words3))
-    print("Similitud con Suicidio:")
-    print(search_doc_no_stop_words.similarity(main_doc_no_stop_words4))
-    response = {'ansiedad': search_doc_no_stop_words.similarity(main_doc_no_stop_words1), 'depresion': search_doc_no_stop_words.similarity(main_doc_no_stop_words2), 'relaciones': search_doc_no_stop_words.similarity(main_doc_no_stop_words3), 'suicidio': search_doc_no_stop_words.similarity(main_doc_no_stop_words4)}
-    return response
 
 
 def lowerStopCoseno(sentence):
@@ -581,81 +605,6 @@ def lowerStopCoseno(sentence):
 
     response = {'ansiedad': ansiedad, 'depresion': depresion, 'relaciones': relaciones, 'suicidio': suicidio}
     return response
-    
-
-def lowerStopJaccard(sentence):
-    test_raw = sentence.lower()
-    search_doc = nlp_spacy(sentence)
-    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
-    content_es_input = str(search_doc_no_stop_words)
-    ansiedad_bigrams = list(ngrams(ansiedad_stop_tokens, 1))
-    depresion_bigrams = list(ngrams(depresion_stop_tokens, 1))
-    relaciones_bigrams = list(ngrams(relaciones_stop_tokens, 1))
-    suicidio_bigrams = list(ngrams(suicidio_stop_tokens, 1))
-    input_bigrams = list(ngrams(content_es_input, 1))
-    intersection_ansiedad = len(list(set(ansiedad_bigrams).intersection(set(input_bigrams))))
-    union_ansiedad = (len(set(ansiedad_bigrams)) + len(set(input_bigrams))) - intersection_ansiedad
-    simil_ansiedad= float(intersection_ansiedad) / union_ansiedad
-    intersection_depresion = len(list(set(depresion_bigrams).intersection(set(input_bigrams))))
-    union_depresion = (len(set(depresion_bigrams)) + len(set(input_bigrams))) - intersection_depresion
-    simil_depresion= float(intersection_depresion) / union_depresion
-    intersection_relaciones = len(list(set(relaciones_bigrams).intersection(set(input_bigrams))))
-    union_relaciones = (len(set(relaciones_bigrams)) + len(set(input_bigrams))) - intersection_relaciones
-    simil_relaciones= float(intersection_relaciones) / union_relaciones
-    intersection_suicidio = len(list(set(suicidio_bigrams).intersection(set(input_bigrams))))
-    union_suicidio = (len(set(suicidio_bigrams)) + len(set(input_bigrams))) - intersection_suicidio
-    simil_suicidio= float(intersection_suicidio) / union_suicidio
-    print("ansiedad: ")
-    print(simil_ansiedad)
-    print("depresion: ")
-    print(simil_depresion)
-    print("relaciones: ")
-    print(simil_relaciones)
-    print("suicidio: ")
-    print(simil_suicidio)
-    response = {'ansiedad': simil_ansiedad, 'depresion': simil_depresion, 'relaciones': simil_relaciones, 'suicidio': simil_suicidio}
-    return response
-
-def categorizerLowerStop(sentence):
-    response = []
-    print("*****CATEGORIZADOR 2*****")
-    print("SPACY")
-    spacyResponse = lowerStopSpacy(sentence)
-    print("COSENO")
-    cosenoResponse = lowerStopCoseno(sentence)
-    print("JACCARD")
-    jaccardResponse = lowerStopJaccard(sentence)
-    response.append(spacyResponse)
-    response.append(cosenoResponse)
-    response.append(jaccardResponse)
-    return response
-
-#CATEGORIZADOR 3 - lower, stopwords and lematizacion
-
-
-def lowerStopLemaSpacy(sentence):
-    test_raw = sentence.lower()
-    search_doc = nlp_spacy(test_raw)
-    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
-    var_test=[]
-    for token in nlp_spacy(search_doc_no_stop_words):
-        var_test.append(token.lemma_)
-    var_str=" ".join(var_test)
-    var_str=nlp_spacy(var_str)
-
-    print("=================================")
-    print("Similitud con Ansiedad:")
-    print(var_str.similarity(main_doc1_lemma))
-    print("Similitud con Depresion:")
-    print(var_str.similarity(main_doc2_lemma))
-    print("Similitud con Relaciones:")
-    print(var_str.similarity(main_doc3_lemma))
-    print("Similitud con Suicidio:")
-    print(var_str.similarity(main_doc4_lemma))
-    response = {'ansiedad': var_str.similarity(main_doc1_lemma), 'depresion': var_str.similarity(main_doc2_lemma), 'relaciones': var_str.similarity(main_doc3_lemma), 'suicidio': var_str.similarity(main_doc4_lemma)}
-    return response
-
-
 
 def loweStopLemaCoseno(sentence):
     test_raw = sentence.lower()
@@ -695,6 +644,86 @@ def loweStopLemaCoseno(sentence):
     
     #max_key = max(response, key=response.get)
     #print(max_key)
+    return response
+
+def categorizerLowerStop(sentence):
+    response = []
+    print("*****CATEGORIZADOR 2*****")
+    print("COSENO LOWER")
+    spacyResponse = lowerCoseno(sentence)
+    print("COSENO LOWER STOP")
+    cosenoResponse = lowerStopCoseno(sentence)
+    print("COSENO LOWER STOP LEMA")
+    jaccardResponse = loweStopLemaCoseno(sentence)
+    response.append(spacyResponse)
+    response.append(cosenoResponse)
+    response.append(jaccardResponse)
+    return response
+
+#CATEGORIZADOR 3 - lower, stopwords and lematizacion
+
+def lowerJaccard(sentence):
+    test_raw = sentence.lower()
+    ansiedad_bigrams = list(ngrams(raw_spacy_ansiedad, 2))
+    depresion_bigrams = list(ngrams(raw_spacy_depresion, 2))
+    relaciones_bigrams = list(ngrams(raw_spacy_relaciones, 2))
+    suicidio_bigrams = list(ngrams(raw_spacy_suicidio, 2))
+    input_bigrams = list(ngrams(test_raw, 2))
+    intersection_ansiedad = len(list(set(ansiedad_bigrams).intersection(set(input_bigrams))))
+    union_ansiedad = (len(set(ansiedad_bigrams)) + len(set(input_bigrams))) - intersection_ansiedad
+    simil_ansiedad= float(intersection_ansiedad) / union_ansiedad
+    intersection_depresion = len(list(set(depresion_bigrams).intersection(set(input_bigrams))))
+    union_depresion = (len(set(depresion_bigrams)) + len(set(input_bigrams))) - intersection_depresion
+    simil_depresion= float(intersection_depresion) / union_depresion
+    intersection_relaciones = len(list(set(relaciones_bigrams).intersection(set(input_bigrams))))
+    union_relaciones = (len(set(relaciones_bigrams)) + len(set(input_bigrams))) - intersection_relaciones
+    simil_relaciones= float(intersection_relaciones) / union_relaciones
+    intersection_suicidio = len(list(set(suicidio_bigrams).intersection(set(input_bigrams))))
+    union_suicidio = (len(set(suicidio_bigrams)) + len(set(input_bigrams))) - intersection_suicidio
+    simil_suicidio= float(intersection_suicidio) / union_suicidio
+    print("ansiedad: ")
+    print(simil_ansiedad)
+    print("depresion: ")
+    print(simil_depresion)
+    print("relaciones: ")
+    print(simil_relaciones)
+    print("suicidio: ")
+    print(simil_suicidio)
+    response = {'ansiedad': simil_ansiedad, 'depresion': simil_depresion, 'relaciones': simil_relaciones, 'suicidio': simil_suicidio}
+    return response
+    
+
+def lowerStopJaccard(sentence):
+    test_raw = sentence.lower()
+    search_doc = nlp_spacy(sentence)
+    search_doc_no_stop_words = nlp_spacy(' '.join([str(t) for t in search_doc if not t.is_stop]))
+    content_es_input = str(search_doc_no_stop_words)
+    ansiedad_bigrams = list(ngrams(ansiedad_stop_tokens, 1))
+    depresion_bigrams = list(ngrams(depresion_stop_tokens, 1))
+    relaciones_bigrams = list(ngrams(relaciones_stop_tokens, 1))
+    suicidio_bigrams = list(ngrams(suicidio_stop_tokens, 1))
+    input_bigrams = list(ngrams(content_es_input, 1))
+    intersection_ansiedad = len(list(set(ansiedad_bigrams).intersection(set(input_bigrams))))
+    union_ansiedad = (len(set(ansiedad_bigrams)) + len(set(input_bigrams))) - intersection_ansiedad
+    simil_ansiedad= float(intersection_ansiedad) / union_ansiedad
+    intersection_depresion = len(list(set(depresion_bigrams).intersection(set(input_bigrams))))
+    union_depresion = (len(set(depresion_bigrams)) + len(set(input_bigrams))) - intersection_depresion
+    simil_depresion= float(intersection_depresion) / union_depresion
+    intersection_relaciones = len(list(set(relaciones_bigrams).intersection(set(input_bigrams))))
+    union_relaciones = (len(set(relaciones_bigrams)) + len(set(input_bigrams))) - intersection_relaciones
+    simil_relaciones= float(intersection_relaciones) / union_relaciones
+    intersection_suicidio = len(list(set(suicidio_bigrams).intersection(set(input_bigrams))))
+    union_suicidio = (len(set(suicidio_bigrams)) + len(set(input_bigrams))) - intersection_suicidio
+    simil_suicidio= float(intersection_suicidio) / union_suicidio
+    print("ansiedad: ")
+    print(simil_ansiedad)
+    print("depresion: ")
+    print(simil_depresion)
+    print("relaciones: ")
+    print(simil_relaciones)
+    print("suicidio: ")
+    print(simil_suicidio)
+    response = {'ansiedad': simil_ansiedad, 'depresion': simil_depresion, 'relaciones': simil_relaciones, 'suicidio': simil_suicidio}
     return response
 
 def loweStopLemaJaccard(sentence):
@@ -744,11 +773,11 @@ def loweStopLemaJaccard(sentence):
 def categorizerLowerStopLema(sentence):
     response = []
     print("*****CATEGORIZADOR 3*****")
-    print("SPACY")
-    spacyResponse = lowerStopLemaSpacy(sentence)
-    print("COSENO")
-    cosenoResponse = loweStopLemaCoseno(sentence)
-    print("JACCARD")
+    print("JACCARD LOWER")
+    spacyResponse = lowerJaccard(sentence)
+    print("JACARD LOWER STOP")
+    cosenoResponse = lowerStopJaccard(sentence)
+    print("JACCARD LOWER STOP LEMA")
     jaccardResponse = loweStopLemaJaccard(sentence)
     response.append(spacyResponse)
     response.append(cosenoResponse)
@@ -856,7 +885,7 @@ def categorizer5(sentence):
 ## COMPARACION 1: POR CADA PRUEBA SACAR LA CATEGORIA QUE MÁS SE REPITE
 def mostCommon(dictMostCommon):
     max_key = max(dictMostCommon, key=dictMostCommon.get)
-    print(max_key)
+
     return max_key
 
 
@@ -866,8 +895,7 @@ def mostCommonCategorizer(arrayCategorizer):
     relaciones = 0
     suicidio = 0
     response = ''
-    print("el arreglo para ver el most common del categorizador es ")
-    print(arrayCategorizer)
+
     spacyMostCommon = mostCommon(arrayCategorizer[0])
     if spacyMostCommon == 'ansiedad':
         ansiedad = ansiedad + 1
@@ -877,6 +905,7 @@ def mostCommonCategorizer(arrayCategorizer):
         relaciones = relaciones + 1
     if spacyMostCommon == 'suicidio':
         suicidio = suicidio + 1
+
     if len(arrayCategorizer) > 2 : 
         jaccardCommon = mostCommon(arrayCategorizer[1])
         if jaccardCommon == 'ansiedad':
@@ -887,6 +916,7 @@ def mostCommonCategorizer(arrayCategorizer):
             relaciones = relaciones + 1
         if jaccardCommon == 'suicidio':
             suicidio = suicidio + 1
+
         if ansiedad >= depresion and ansiedad >= relaciones and ansiedad >= suicidio:
             response = 'ansiedad'
         if depresion >= ansiedad and depresion >= relaciones and depresion >= suicidio:
@@ -921,7 +951,8 @@ def globalMostCommon(responseFirstCategorizer, responseSecondCategorizer, respon
     relaciones = 0
     suicidio = 0
     response = ''
-    myMood = {'ansiedad': ansiedad}
+    myMood = {'depresion': depresion}
+    myResponseMood = []
     mostCommonFirst = mostCommonCategorizer(responseFirstCategorizer)
     print("el mas comun en el categorizador 1 es")
     print(mostCommonFirst)
@@ -985,73 +1016,163 @@ def globalMostCommon(responseFirstCategorizer, responseSecondCategorizer, respon
     if ansiedad >= depresion and ansiedad >= relaciones and ansiedad >= suicidio:
         response = 'ansiedad'
         myMood = {'ansiedad': ansiedad}
+        myResponseMood.append(myMood)
     if depresion >= ansiedad and depresion >= relaciones and depresion >= suicidio:
         response = 'depresion'
         myMood = {'depresion': depresion}
+        myResponseMood.append(myMood)
     if relaciones >= depresion and relaciones >= ansiedad and relaciones >= suicidio:
         response = 'relaciones'
         myMood = {'relaciones': relaciones}
+        myResponseMood.append(myMood)
     if suicidio >= depresion and suicidio >= relaciones and suicidio >= ansiedad:
         response = 'suicidio'
         myMood = {'suicidio': suicidio}
+        myResponseMood.append(myMood)
     print("mi resultado final de el mas comun en los 5 categorizadores es:")
-    print(myMood)
-    return myMood 
+    print(myResponseMood)
+    return myResponseMood 
 
 ## COMPARACION 2: POR CADA FUNCION MIRAR SI LA DISSTANCIA ENTRE DOS CATEGORIAS ES MUY CORTA
                 # SI ESO OCURRE EN TODOS LOS DE UN CATEGORIZADOR UNA NUEVA PREGUNTA
-def distanceFunction(responseCategorizer):
-    ansiedad = responseCategorizer['ansiedad'] 
-    depresion = responseCategorizer['depresion'] 
-    relaciones = responseCategorizer['relaciones'] 
-    suicidio = responseCategorizer['suicidio']
-    responseMax = mostCommon(responseCategorizer)
-    maxDistance = 0.05
+def distanceFunction(responseCategorizer, responseArrayMostCommon):
+    ansiedadA = responseCategorizer['ansiedad'] 
+    depresionA = responseCategorizer['depresion'] 
+    relacionesA = responseCategorizer['relaciones'] 
+    suicidioA = responseCategorizer['suicidio']
+    maxDistance = 0.07
     response = []
     ansiedad = 0
     depresion = 0
     relaciones = 0
     suicidio = 0
-    if responseMax == 'ansiedad':
-        if abs(ansiedad - depresion) <= maxDistance :
-            ansiedad = ansiedad + 1
-            depresion = depresion + 1
-        if abs(ansiedad - relaciones) <= maxDistance :
-            ansiedad = ansiedad + 1
-            relaciones = relaciones + 1
-        if abs(ansiedad - suicidio) <= maxDistance :
-            ansiedad = ansiedad + 1
-            suicidio = suicidio + 1
-    if responseMax == 'depresion':
-        if abs(ansiedad - depresion) <= maxDistance :
-            ansiedad = ansiedad + 1
-            depresion = depresion + 1
-        if abs(depresion - relaciones) <= maxDistance :
-            depresion = depresion + 1
-            relaciones = relaciones + 1
-        if abs(depresion - suicidio) <= maxDistance :
-            depresion = depresion + 1
-            suicidio = suicidio + 1
-    if responseMax == 'relaciones':
-        if abs(ansiedad - relaciones) <= maxDistance :
-            ansiedad = ansiedad + 1
-            relaciones = relaciones + 1
-        if abs(depresion - relaciones) <= maxDistance :
-            relaciones = relaciones + 1
-            depresion = depresion + 1
-        if abs(relaciones - suicidio) <= maxDistance :
-            relaciones = relaciones + 1
-            depresion = depresion + 1  
-    if responseMax == 'suicidio':
-        if abs(ansiedad - suicidio) <= maxDistance :
-            ansiedad = ansiedad + 1
-            suicidio = suicidio + 1
-        if abs(depresion - suicidio) <= maxDistance :
-            suicidio = suicidio + 1
-            depresion = depresion + 1
-        if abs(relaciones - suicidio) <= maxDistance :
-            suicidio = suicidio + 1
-            relaciones = relaciones + 1
+    
+    arrayDistancesMostCommon = OrderedDict()
+    arrayDistancesMostCommon['ansiedad'] = ansiedadA
+    arrayDistancesMostCommon['depresion'] = depresionA
+    arrayDistancesMostCommon['relaciones'] = relacionesA
+    arrayDistancesMostCommon['suicidio'] = suicidioA
+    print(arrayDistancesMostCommon)
+    
+    print(arrayDistancesMostCommon)
+    mySortedMostCommon = OrderedDict(sorted(arrayDistancesMostCommon.items(), key =lambda kv:(kv[1], kv[0])))
+    print("revisando esto")
+    valuesFinalMostCommon = list(mySortedMostCommon)
+    valueskeysMostCommon = list(mySortedMostCommon.keys())
+    valuesMostCommon = list(mySortedMostCommon.values())
+    print(valuesFinalMostCommon[0])
+    responseMostCommon = []
+    responseMostCommon.append(valuesFinalMostCommon[len(valuesFinalMostCommon)-1])
+    responseMostCommon.append(valuesFinalMostCommon[len(valuesFinalMostCommon)-2])
+    mresponseValxMostCommon1 =  responseMostCommon[0]
+    mresponseValxMostCommon2 = responseMostCommon[1]
+
+
+    mresponseValxMostCommon2Key = valueskeysMostCommon[len(valueskeysMostCommon)-1]
+    mresponseValxMostCommon1Key = valueskeysMostCommon[len(valueskeysMostCommon)-2]
+    mresponseValxMostCommon2Value = valuesMostCommon[len(valuesMostCommon)-1]
+    mresponseValxMostCommon1Velue = valuesMostCommon[len(valuesMostCommon)-2]
+
+
+    print("estoy revisando la funcion de distancias")
+    print(responseArrayMostCommon)
+    array2MostCommon = False
+    if abs(mresponseValxMostCommon2Value - mresponseValxMostCommon1Velue) <= maxDistance:
+        print("quedo el mimsmo arreglo")
+        array2MostCommon = True
+    myResponse = []
+    for responseMax in responseArrayMostCommon:
+        
+        mresponseValx =  list(responseMax.keys())
+        for mresponseVal in mresponseValx:
+
+            if mresponseVal == mresponseValxMostCommon1Key or  mresponseVal == mresponseValxMostCommon2Key:
+                if array2MostCommon:
+                    response = responseMostCommon
+                else:
+
+                    if mresponseVal == 'ansiedad':
+                        if abs(ansiedad - depresion) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            depresion = depresion + 1
+                        if abs(ansiedad - relaciones) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            relaciones = relaciones + 1
+                        if abs(ansiedad - suicidio) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            suicidio = suicidio + 1
+                    if mresponseVal == 'depresion':
+                        if abs(ansiedad - depresion) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            depresion = depresion + 1
+                        if abs(depresion - relaciones) <= maxDistance :
+                            depresion = depresion + 1
+                            relaciones = relaciones + 1
+                        if abs(depresion - suicidio) <= maxDistance :
+                            depresion = depresion + 1
+                            suicidio = suicidio + 1
+                    if mresponseVal == 'relaciones':
+                        if abs(ansiedad - relaciones) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            relaciones = relaciones + 1
+                        if abs(depresion - relaciones) <= maxDistance :
+                            relaciones = relaciones + 1
+                            depresion = depresion + 1
+                        if abs(relaciones - suicidio) <= maxDistance :
+                            relaciones = relaciones + 1
+                            depresion = depresion + 1  
+                    if mresponseVal == 'suicidio':
+                        if abs(ansiedad - suicidio) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            suicidio = suicidio + 1
+                        if abs(depresion - suicidio) <= maxDistance :
+                            suicidio = suicidio + 1
+                            depresion = depresion + 1
+                        if abs(relaciones - suicidio) <= maxDistance :
+                            suicidio = suicidio + 1
+                            relaciones = relaciones + 1
+            if (mresponseValxMostCommon1Key == 'ansiedad' or  mresponseValxMostCommon2Key == 'ansiedad') and mresponseVal == 'depresion':
+                    if mresponseVal == 'ansiedad':
+                        if abs(ansiedad - depresion) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            depresion = depresion + 1
+                        if abs(ansiedad - relaciones) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            relaciones = relaciones + 1
+                        if abs(ansiedad - suicidio) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            suicidio = suicidio + 1
+                    if mresponseVal == 'depresion':
+                        if abs(ansiedad - depresion) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            depresion = depresion + 1
+                        if abs(depresion - relaciones) <= maxDistance :
+                            depresion = depresion + 1
+                            relaciones = relaciones + 1
+                        if abs(depresion - suicidio) <= maxDistance :
+                            depresion = depresion + 1
+                            suicidio = suicidio + 1
+                    if mresponseVal == 'relaciones':
+                        if abs(ansiedad - relaciones) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            relaciones = relaciones + 1
+                        if abs(depresion - relaciones) <= maxDistance :
+                            relaciones = relaciones + 1
+                            depresion = depresion + 1
+                        if abs(relaciones - suicidio) <= maxDistance :
+                            relaciones = relaciones + 1
+                            depresion = depresion + 1  
+                    if mresponseVal == 'suicidio':
+                        if abs(ansiedad - suicidio) <= maxDistance :
+                            ansiedad = ansiedad + 1
+                            suicidio = suicidio + 1
+                        if abs(depresion - suicidio) <= maxDistance :
+                            suicidio = suicidio + 1
+                            depresion = depresion + 1
+                        if abs(relaciones - suicidio) <= maxDistance :
+                            suicidio = suicidio + 1
+                            relaciones = relaciones + 1
+
     print("viendo las distancias mi arreglo quedo")
     arrayDistances = OrderedDict()
     arrayDistances['ansiedad'] = ansiedad
@@ -1069,6 +1190,7 @@ def distanceFunction(responseCategorizer):
     response.append(valuesFinal[len(valuesFinal)-2])
     return response
 def chooseMood(sentence):
+    global mood
     responseFirstCategorizer = categorizerLower(sentence)
     responseSecondCategorizer = categorizerLowerStop(sentence)
     responseThirdCategorizer = categorizerLowerStopLema(sentence)
@@ -1082,104 +1204,307 @@ def chooseMood(sentence):
     relaciones = 0
     suicidio = 0
     
-    distanceFirstCategorizer = distanceFunction(responseFirstCategorizer[0])
-    distanceFirstCategorizerJaccard = distanceFunction(responseFirstCategorizer[1])
     responseGlobalCommon = globalMostCommon(responseFirstCategorizer,responseSecondCategorizer,responseThirdCategorizer,responseFourthCategorizer,responseFifthCategorizer)
-    myglobalCatValue =  list(responseGlobalCommon.values())
-    if myglobalCatValue[0] >= 3:
-        myglobalCat =  list(responseGlobalCommon.keys())
-        responseArray.append(myglobalCat[0])
-        print("Si me decidi ")
-        print(responseArray[0])
+    responseGlobalCommonValue = list(responseGlobalCommon[0].values())
+    if  len(responseGlobalCommon) == 1 and responseGlobalCommonValue[0] >= 3:
+            myglobalCat =  list(responseGlobalCommon[0].keys())
+            responseArray.append(myglobalCat[0])
+            print("Si me decidi ")
+            print(responseArray[0])
+            mood = arrayCategoSearch(responseArray[0])
     else:
-        if len(distanceFirstCategorizer) > 1:
+        distanceFirstCategorizerLower = distanceFunction(responseFirstCategorizer[0], responseGlobalCommon)
+        distanceFirstCategorizerLowerStop = distanceFunction(responseFirstCategorizer[1], responseGlobalCommon)
+        distanceFirstCategorizerLowerStopLema = distanceFunction(responseFirstCategorizer[2], responseGlobalCommon)
+        
+        if len(distanceFirstCategorizerLower) > 1:
             needMoreInfo = needMoreInfo + 1
-            if distanceFirstCategorizer[0] == 'ansiedad' or distanceFirstCategorizer[1] == 'ansiedad' :
+            if distanceFirstCategorizerLower[0] == 'ansiedad' or distanceFirstCategorizerLower[1] == 'ansiedad' :
                  ansiedad = ansiedad + 1
-            if distanceFirstCategorizer[0] == 'depresion' or distanceFirstCategorizer[1] == 'depresion':
+            if distanceFirstCategorizerLower[0] == 'depresion' or distanceFirstCategorizerLower[1] == 'depresion':
                 depresion = depresion + 1
-            if distanceFirstCategorizer[0] == 'relaciones' or distanceFirstCategorizer[1] == 'relaciones':
+            if distanceFirstCategorizerLower[0] == 'relaciones' or distanceFirstCategorizerLower[1] == 'relaciones':
                 relaciones = relaciones + 1
-            if distanceFirstCategorizer[0] == 'suicidio' or distanceFirstCategorizer[1] == 'suicidio':
+            if distanceFirstCategorizerLower[0] == 'suicidio' or distanceFirstCategorizerLower[1] == 'suicidio':
                 suicidio = suicidio + 1
-        if len(distanceFirstCategorizerJaccard) > 1:
-            needMoreInfo = needMoreInfo + 1
-            if distanceFirstCategorizerJaccard[0] == 'ansiedad' or distanceFirstCategorizerJaccard[1] == 'ansiedad' :
+        else:
+            if distanceFirstCategorizerLower[0] == 'ansiedad':
                  ansiedad = ansiedad + 1
-            if distanceFirstCategorizerJaccard[0] == 'depresion' or distanceFirstCategorizerJaccard[1] == 'depresion':
+            if distanceFirstCategorizerLower[0] == 'depresion':
                 depresion = depresion + 1
-            if distanceFirstCategorizerJaccard[0] == 'relaciones' or distanceFirstCategorizerJaccard[1] == 'relaciones':
+            if distanceFirstCategorizerLower[0] == 'relaciones':
                 relaciones = relaciones + 1
-            if distanceFirstCategorizerJaccard[0] == 'suicidio' or distanceFirstCategorizerJaccard[1] == 'suicidio':
-                suicidio = suicidio + 1
-        distanceSecondCategorizer =distanceFunction(responseSecondCategorizer[0])
-        distanceSecondCategorizerJaccard = distanceFunction(responseSecondCategorizer[1])
-        if len(distanceSecondCategorizer) > 1:
-            needMoreInfo = needMoreInfo + 1
-            if distanceSecondCategorizer[0] == 'ansiedad' or distanceSecondCategorizer[1] == 'ansiedad' :
-                 ansiedad = ansiedad + 1
-            if distanceSecondCategorizer[0] == 'depresion' or distanceSecondCategorizer[1] == 'depresion':
-                depresion = depresion + 1
-            if distanceSecondCategorizer[0] == 'relaciones' or distanceSecondCategorizer[1] == 'relaciones':
-                relaciones = relaciones + 1
-            if distanceSecondCategorizer[0] == 'suicidio' or distanceSecondCategorizer[1] == 'suicidio':
-                suicidio = suicidio + 1
-        if len(distanceSecondCategorizerJaccard) > 1:
-            needMoreInfo = needMoreInfo + 1
-            if distanceSecondCategorizerJaccard[0] == 'ansiedad' or distanceSecondCategorizerJaccard[1] == 'ansiedad' :
-                 ansiedad = ansiedad + 1
-            if distanceSecondCategorizerJaccard[0] == 'depresion' or distanceSecondCategorizerJaccard[1] == 'depresion':
-                depresion = depresion + 1
-            if distanceSecondCategorizerJaccard[0] == 'relaciones' or distanceSecondCategorizerJaccard[1] == 'relaciones':
-                relaciones = relaciones + 1
-            if distanceSecondCategorizerJaccard[0] == 'suicidio' or distanceSecondCategorizerJaccard[1] == 'suicidio':
+            if distanceFirstCategorizerLower[0] == 'suicidio':
                 suicidio = suicidio + 1
 
-        distanceThirdCategorizer = distanceFunction(responseThirdCategorizer[0])
-        distanceThirdCategorizerJaccard = distanceFunction(responseThirdCategorizer[1])
-
-        if len(distanceThirdCategorizer) > 1:
+        if len(distanceFirstCategorizerLowerStop) > 1:
             needMoreInfo = needMoreInfo + 1
-            if distanceThirdCategorizer[0] == 'ansiedad' or distanceThirdCategorizer[1] == 'ansiedad' :
+            if distanceFirstCategorizerLowerStop[0] == 'ansiedad' or distanceFirstCategorizerLowerStop[1] == 'ansiedad' :
                  ansiedad = ansiedad + 1
-            if distanceThirdCategorizer[0] == 'depresion' or distanceThirdCategorizer[1] == 'depresion':
+            if distanceFirstCategorizerLowerStop[0] == 'depresion' or distanceFirstCategorizerLowerStop[1] == 'depresion':
                 depresion = depresion + 1
-            if distanceThirdCategorizer[0] == 'relaciones' or distanceThirdCategorizer[1] == 'relaciones':
+            if distanceFirstCategorizerLowerStop[0] == 'relaciones' or distanceFirstCategorizerLowerStop[1] == 'relaciones':
                 relaciones = relaciones + 1
-            if distanceThirdCategorizer[0] == 'suicidio' or distanceThirdCategorizer[1] == 'suicidio':
+            if distanceFirstCategorizerLowerStop[0] == 'suicidio' or distanceFirstCategorizerLowerStop[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceFirstCategorizerLowerStop[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceFirstCategorizerLowerStop[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceFirstCategorizerLowerStop[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFirstCategorizerLowerStop[0] == 'suicidio':
                 suicidio = suicidio + 1
 
-        if len(distanceThirdCategorizerJaccard) > 1:
+        if len(distanceFirstCategorizerLowerStopLema) > 1:
             needMoreInfo = needMoreInfo + 1
-            if distanceThirdCategorizerJaccard[0] == 'ansiedad' or distanceThirdCategorizerJaccard[1] == 'ansiedad' :
+            if distanceFirstCategorizerLowerStopLema[0] == 'ansiedad' or distanceFirstCategorizerLowerStopLema[1] == 'ansiedad' :
                  ansiedad = ansiedad + 1
-            if distanceThirdCategorizerJaccard[0] == 'depresion' or distanceThirdCategorizerJaccard[1] == 'depresion':
+            if distanceFirstCategorizerLowerStopLema[0] == 'depresion' or distanceFirstCategorizerLowerStopLema[1] == 'depresion':
                 depresion = depresion + 1
-            if distanceThirdCategorizerJaccard[0] == 'relaciones' or distanceThirdCategorizerJaccard[1] == 'relaciones':
+            if distanceFirstCategorizerLowerStopLema[0] == 'relaciones' or distanceFirstCategorizerLowerStopLema[1] == 'relaciones':
                 relaciones = relaciones + 1
-            if distanceThirdCategorizerJaccard[0] == 'suicidio' or distanceThirdCategorizerJaccard[1] == 'suicidio':
+            if distanceFirstCategorizerLowerStopLema[0] == 'suicidio' or distanceFirstCategorizerLowerStopLema[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else:
+            if distanceFirstCategorizerLowerStopLema[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceFirstCategorizerLowerStopLema[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceFirstCategorizerLowerStopLema[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFirstCategorizerLowerStopLema[0] == 'suicidio':
                 suicidio = suicidio + 1
 
+
+
+        distanceSecondCategorizerLower =distanceFunction(responseSecondCategorizer[0],responseGlobalCommon)
+        distanceSecondCategorizerLowerStop= distanceFunction(responseSecondCategorizer[1],responseGlobalCommon)
+        distanceSecondCategorizerLowerStopLemas= distanceFunction(responseSecondCategorizer[2],responseGlobalCommon)
+        if len(distanceSecondCategorizerLower) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceSecondCategorizerLower[0] == 'ansiedad' or distanceSecondCategorizerLower[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLower[0] == 'depresion' or distanceSecondCategorizerLower[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLower[0] == 'relaciones' or distanceSecondCategorizerLower[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLower[0] == 'suicidio' or distanceSecondCategorizerLower[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else:
+            if distanceSecondCategorizerLower[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLower[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLower[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLower[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+
+        if len(distanceSecondCategorizerLowerStop) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceSecondCategorizerLowerStop[0] == 'ansiedad' or distanceSecondCategorizerLowerStop[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLowerStop[0] == 'depresion' or distanceSecondCategorizerLowerStop[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLowerStop[0] == 'relaciones' or distanceSecondCategorizerLowerStop[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLowerStop[0] == 'suicidio' or distanceSecondCategorizerLowerStop[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceSecondCategorizerLowerStop[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLowerStop[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLowerStop[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLowerStop[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        if len(distanceSecondCategorizerLowerStopLemas) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'ansiedad' or distanceSecondCategorizerLowerStopLemas[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'depresion' or distanceSecondCategorizerLowerStopLemas[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'relaciones' or distanceSecondCategorizerLowerStopLemas[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'suicidio' or distanceSecondCategorizerLowerStopLemas[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceSecondCategorizerLowerStopLemas[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceSecondCategorizerLowerStopLemas[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        distanceThirdCategorizerLower = distanceFunction(responseThirdCategorizer[0],responseGlobalCommon)
+        distanceThirdCategorizerLowerStop = distanceFunction(responseThirdCategorizer[1],responseGlobalCommon)
+        distanceThirdCategorizerLowerStopLemas = distanceFunction(responseThirdCategorizer[1],responseGlobalCommon)
+        if len(distanceThirdCategorizerLower) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceThirdCategorizerLower[0] == 'ansiedad' or distanceThirdCategorizerLower[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLower[0] == 'depresion' or distanceThirdCategorizerLower[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLower[0] == 'relaciones' or distanceThirdCategorizerLower[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLower[0] == 'suicidio' or distanceThirdCategorizerLower[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else:
+            if distanceThirdCategorizerLower[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLower[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLower[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLower[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        if len(distanceThirdCategorizerLowerStop) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceThirdCategorizerLowerStop[0] == 'ansiedad' or distanceThirdCategorizerLowerStop[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLowerStop[0] == 'depresion' or distanceThirdCategorizerLowerStop[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLowerStop[0] == 'relaciones' or distanceThirdCategorizerLowerStop[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLowerStop[0] == 'suicidio' or distanceThirdCategorizerLowerStop[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceThirdCategorizerLowerStop[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLowerStop[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLowerStop[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLowerStop[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        if len(distanceThirdCategorizerLowerStopLemas) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'ansiedad' or distanceThirdCategorizerLowerStopLemas[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'depresion' or distanceThirdCategorizerLowerStopLemas[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'relaciones' or distanceThirdCategorizerLowerStopLemas[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'suicidio' or distanceThirdCategorizerLowerStopLemas[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else:
+            if distanceThirdCategorizerLowerStopLemas[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceThirdCategorizerLowerStopLemas[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        distanceFourthCategorizerLower = distanceFunction(responseFourthCategorizer[0],responseGlobalCommon)
+        if len(distanceFourthCategorizerLower) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceFourthCategorizerLower[0] == 'ansiedad' or distanceFourthCategorizerLower[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceFourthCategorizerLower[0] == 'depresion' or distanceFourthCategorizerLower[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceFourthCategorizerLower[0] == 'relaciones' or distanceFourthCategorizerLower[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFourthCategorizerLower[0] == 'suicidio' or distanceFourthCategorizerLower[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceFourthCategorizerLower[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceFourthCategorizerLower[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceFourthCategorizerLower[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFourthCategorizerLower[0] == 'suicidio':
+                suicidio = suicidio + 1
+
+        distanceFifthCategorizerLower = distanceFunction(responseFifthCategorizer[0],responseGlobalCommon)
+        if len(distanceFifthCategorizerLower) > 1:
+            needMoreInfo = needMoreInfo + 1
+            if distanceFifthCategorizerLower[0] == 'ansiedad' or distanceFifthCategorizerLower[1] == 'ansiedad' :
+                 ansiedad = ansiedad + 1
+            if distanceFifthCategorizerLower[0] == 'depresion' or distanceFifthCategorizerLower[1] == 'depresion':
+                depresion = depresion + 1
+            if distanceFifthCategorizerLower[0] == 'relaciones' or distanceFifthCategorizerLower[1] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFifthCategorizerLower[0] == 'suicidio' or distanceFifthCategorizerLower[1] == 'suicidio':
+                suicidio = suicidio + 1
+        else: 
+            if distanceFifthCategorizerLower[0] == 'ansiedad':
+                 ansiedad = ansiedad + 1
+            if distanceFifthCategorizerLower[0] == 'depresion':
+                depresion = depresion + 1
+            if distanceFifthCategorizerLower[0] == 'relaciones':
+                relaciones = relaciones + 1
+            if distanceFifthCategorizerLower[0] == 'suicidio':
+                suicidio = suicidio + 1
+        
     
-            print("Empece en el if")
-            arrayDistances = OrderedDict()
-            arrayDistances['ansiedad'] = ansiedad
-            arrayDistances['depresion'] = depresion
-            arrayDistances['relaciones'] = relaciones
-            arrayDistances['suicidio'] = suicidio
-            print("mi arreglo sin ordenar")
+        arrayDistances = OrderedDict()
+        arrayDistances['ansiedad'] = ansiedad
+        arrayDistances['depresion'] = depresion
+        arrayDistances['relaciones'] = relaciones
+        arrayDistances['suicidio'] = suicidio
+        if arrayDistances['ansiedad'] >  arrayDistances['depresion'] and  arrayDistances['ansiedad'] >  arrayDistances['relaciones'] and  arrayDistances['ansiedad'] >  arrayDistances['suicidio']:
+            responseArray.append('ansiedad')
+            mood = arrayCategoSearch('ansiedad')
+        elif arrayDistances['depresion'] >  arrayDistances['ansiedad'] and  arrayDistances['depresion'] >  arrayDistances['relaciones'] and  arrayDistances['depresion'] >  arrayDistances['suicidio']:
+            responseArray.append('depresion')
+            mood = arrayCategoSearch('depresion')
+        elif arrayDistances['relaciones'] >  arrayDistances['ansiedad'] and  arrayDistances['relaciones'] >  arrayDistances['depresion'] and  arrayDistances['relaciones'] >  arrayDistances['suicidio']:
+            responseArray.append('relaciones')
+            mood = arrayCategoSearch('relaciones')
+        elif arrayDistances['suicidio'] >  arrayDistances['ansiedad'] and  arrayDistances['suicidio'] >  arrayDistances['depresion'] and  arrayDistances['suicidio'] >  arrayDistances['relaciones']:
+            responseArray.append('suicidio')
+            mood = arrayCategoSearch('suicidio')
+        else:
+
             print(arrayDistances)
             mySorted = OrderedDict(sorted(arrayDistances.items(), key =lambda kv:(kv[1], kv[0])))
-            print("mi arreglo ordenado quedo asi")
+
             valuesFinal = list(mySorted)
             print(valuesFinal)
-            
+                    
             responseArray.append(valuesFinal[2])
             responseArray.append(valuesFinal[3])
             print("no me decidi aun tengo que ver en estas dos ")
             print(responseArray[0])
             print(responseArray[1])
-            print("quiero ver aca como hago")
+       
+                
+            
     return responseArray
 
+def arrayCategoSearch(categoria):
+    global myFinalMood
+    global myConversation
+    global mood
+    print("en getCategoTema")
+    print(myConversation.tema)
+    print(myFinalMood)
+    if categoria == 'depresion':
+        mood.append("Tristeza")
+        mood.append("Trastorno depresivo")
+        mood.append("trastorno depresivo")
+                
+    if categoria == 'ansiedad':
+        mood.append("Ansiedad")
+        mood.append("Higiene del sueño")
+        mood.append("Miedo")
+    if categoria == 'relaciones':
+        mood.append("Conflicto familiar")
+        mood.append("Características familiares")
+        mood.append("Crianza")
+        mood.append("Relaciones de hermanos")
+            
+    return mood
 
