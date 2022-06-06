@@ -35,10 +35,10 @@ class ActionRecursos(Action):
         myUser = UserInformation.getMyUser()
         bithday = myUser.birthday.split('/')
         year = ''
-        if len(bithday) > 1:
+        if len(bithday) > 2:
             year = bithday[2]
         nombre = myUser.name.split(" ")
-        dispatcher.utter_message(text="Aquí hay algo para que puede ayudarte")
+        dispatcher.utter_message(text=nombre[0] + "Se que estas pasando por un momento dificil, este recurso podría ayudarte")
         dispatcher.utter_message(text=selectResource(tema, year))
         #dispatcher.utter_message(text=nombre[0] + " ¿Te gustaría que un profesional te contacte el siguiente día hábil para que brinde mayor atención?")
 
@@ -78,7 +78,7 @@ class ActionEndConversationMoreAtention(Action):
         dispatcher.utter_message(text="Perfecto, un profesional se pondrá en contacto contigo!!")
         myUser = UserInformation.getMyUser()
         nombre = myUser.name.split(" ")
-        dispatcher.utter_message(text=nombre[0]+ "Recuerda que acá estoy disponible para volver a hablar contigo ")
+        dispatcher.utter_message(text=nombre[0]+ " Recuerda que acá estoy disponible para volver a hablar contigo ")
         conversationUser = ConversationUser.getConversation()
         message = '<html><body><h1>Hola! este correo es automático</h1><h2>A continuación tienes los datos del usuario que tuvo una conversación con el chatbot de Mentes y requiere más atención</h2><p><b>Nombre:</b></p></body></html>'
         sendMail(myUser.name,myUser.mail,myUser.phone,myUser.birthday,myUser.doc,conversationUser,'Si','Conversación con usuario que necesita más atención')
@@ -166,9 +166,6 @@ def selectResource(tema, year):
     file_errors_location = '/Users/daniela.beltran/Desktop/maestria/Tesis/Codigo/Recursos/RecursosDoc.xlsx'
     resources = pd.read_excel(file_errors_location)
     toSelect = []
-    age = getAge(year)
-    print("el tema elegido al final fue")
-    print(tema)
     for x in resources['SUBTEMA']:
         t = x.replace("; ", ";")
         y = t.split(';')

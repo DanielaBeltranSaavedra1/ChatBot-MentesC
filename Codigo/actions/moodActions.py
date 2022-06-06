@@ -348,8 +348,8 @@ class ActionGetFirstMood(Action):
             if myFinalMood == 'relaciones':
                 PREGUNTASELEGIDAS=QUESTIONSRELACIONES
             if myFinalMood == 'suicidio':
-                dispatcher.utter_message(text="Por favor contacta la liena 123")
-                return [FollowupAction("action_depression_end")]
+                dispatcher.utter_message(text="Por favor contacta la linea 123")
+                return [FollowupAction("action_recursos")]
             myConversation.tema = myFinalMood
             mood = arrayCategoSearch(myFinalMood)
         else:               
@@ -371,7 +371,7 @@ class ActionGetFirstMood(Action):
                     if myMoodIs[0] == 'relaciones':
                         PREGUNTASELEGIDAS=QUESTIONSRELACIONES
                     if myMoodIs[0] == 'suicidio':
-                        conversationWithUser.append("Por favor contacta la liena 123")
+                        conversationWithUser.append("No estas solo, se que es un momento dificil. Por favor contacta la liena 123, alguien puede escucharte y ayudarte")
                         return [FollowupAction("action_depression_end")]
                         
                 myConversation.tema = myFinalMood       
@@ -387,9 +387,9 @@ class ActionDepressionEnd(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(text="Por favor contacta la linea 123")
+        dispatcher.utter_message(text="No estas solo, se que es un momento dificil. Por favor contacta la liena 123, alguien puede escucharte y ayudarte")
 
-        return [FollowupAction("action_more_conversation_more_recursos")]
+        return [FollowupAction("action_recursos")]
 
 class ActionAskQuestion(Action):
 
@@ -464,12 +464,12 @@ class ActionMoodTwoMoods(Action):
         if myFinalMood == 'relaciones':
             PREGUNTASELEGIDAS=QUESTIONSRELACIONES
         if myFinalMood == 'suicidio':
-            conversationWithUser.append("Por favor contacta la liena 123")
-            return [FollowupAction("action_depression_end")]
+            conversationWithUser.append("No estas solo, se que es un momento dificil. Por favor contacta la liena 123, alguien puede escucharte y ayudarte")
+            return [FollowupAction("action_recursos")]
         myConversation.tema = myFinalMood
         mood = arrayCategoSearch(myFinalMood)
 
-        return [FollowupAction("action_ask_question_two_moods")]
+        return [FollowupAction("action_recursos")]
 
 #CATEGORIZADOR 1 - lower
 
@@ -1209,7 +1209,7 @@ def chooseMood(sentence):
     if  len(responseGlobalCommon) == 1 and responseGlobalCommonValue[0] >= 3:
             myglobalCat =  list(responseGlobalCommon[0].keys())
             responseArray.append(myglobalCat[0])
-            print("Si me decidi ")
+            print("La categoria es: ")
             print(responseArray[0])
             mood = arrayCategoSearch(responseArray[0])
     else:
@@ -1476,7 +1476,7 @@ def chooseMood(sentence):
                     
             responseArray.append(valuesFinal[2])
             responseArray.append(valuesFinal[3])
-            print("no me decidi aun tengo que ver en estas dos ")
+            print("No decidi aun tengo que ver en estas dos categorias")
             print(responseArray[0])
             print(responseArray[1])
        
@@ -1505,6 +1505,11 @@ def arrayCategoSearch(categoria):
         mood.append("Características familiares")
         mood.append("Crianza")
         mood.append("Relaciones de hermanos")
+        mood.append("Servicios de salud mental")
+    if categoria == 'suicidio':
+        mood.append("Muerte")
+        mood.append("Ideación suicida, intento de suicidio, suicidio completado")
+        mood.append("Ideación suicida")
             
     return mood
 
